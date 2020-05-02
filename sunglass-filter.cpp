@@ -26,10 +26,10 @@ void naiveReplace(Mat &muskImage, Mat &sunglassRGB)
 int main()
 {
     // Load face image
-    string faceImagePath = "./musk.png";
+    string faceImagePath = "../musk.png";
     Mat faceImage = imread(faceImagePath);
 
-    string sunglassImagePath = "./sunglass.png";
+    string sunglassImagePath = "../sunglass.png";
     Mat sunglassImage = imread(sunglassImagePath, -1);
 
     resize(sunglassImage, sunglassImage, Size(), 0.4, 0.4);
