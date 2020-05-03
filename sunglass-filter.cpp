@@ -8,8 +8,8 @@ void naiveReplace(Mat &muskImage, Mat &sunglassRGB)
 {
     // using hit and trial find the top left and the top right
     // top left corner of the glasses
-    int topLeftRow = 130;
-    int topLeftCol = 130;
+    int topLeftRow = 160;
+    int topLeftCol = 480;
 
     int bottomRightRow = topLeftRow + sunglassRGB.size().height;
     int bottomRightCol = topLeftCol + sunglassRGB.size().width;
