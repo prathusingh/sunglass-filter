@@ -2,12 +2,16 @@
 #define SUNGLASS_FILTER_H_
 
 #include <string>
+#include <utility>
+
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
 
 namespace sunglassfilter
 {
+typedef std::pair<int, int> Bound;
+
 class SunglassFilter
 {
 private:
@@ -21,7 +25,7 @@ public:
 
     void UsingMask(Mat &face_img, Mat &sunglass_img, Mat &alpha_mask);
 
-    static void GetCoordinates(Mat &sunglass_img);
+    static std::pair<Bound, Bound> GetCoordinates(Mat &sunglass_img);
 };
 } // namespace sunglassfilter
 
