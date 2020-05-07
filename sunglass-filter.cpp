@@ -38,9 +38,8 @@ std::pair<std::pair<int, int>, std::pair<int, int>> SunglassFilter::GetCoordinat
 
 int main()
 {
-  std::string face_image_path = "../musk.png";
-  std::string sun_glass_path = "../sunglass.png";
+  std::string face_image_path = "../images/musk.png";
+  std::string sun_glass_path = "../images/sunglass.png";
   SunglassFilter sunglass_filter{face_image_path, sun_glass_path};
 }
-
 } // namespace sunglassfilter
