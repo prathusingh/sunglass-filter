@@ -1,64 +1,35 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-using namespace std;
+#include "sunglass-filter.h";
+
 using namespace cv;
 
-void naiveReplace(Mat &muskImage, Mat &sunglassRGB)
+namespace sunglassfilter
 {
-    // using hit and trial find the top left and the top right
-    // top left corner of the glasses
-    int topLeftRow = 160;
-    int topLeftCol = 480;
+SunglassFilter::SunglassFilter(std::string facePath, std::string sunglassPath)
+    : face(imread(facePath), sunglass(imread(sunglassPath))) {}
 
-    int bottomRightRow = topLeftRow + sunglassRGB.size().height;
-    int bottomRightCol = topLeftCol + sunglassRGB.size().width;
+void SunglassFilter::NaiveReplace(Mat &face_img, Mat &sunglass_img)
+{
+  std::cout << "naive replace" << std::endl;
+}
 
-    Mat muskWithNaiveReplace = muskImage.clone();
+void SunglassFilter::UsingMask(Mat &face_img, Mat &sunglass_img, Mat &alpha_mask)
+{
+  std::cout << "using mask" << std::endl;
+}
 
-    Mat roiFace = muskWithNaiveReplace(Range(topLeftRow, bottomRightRow), Range(topLeftCol, bottomRightCol));
-
-    sunglassRGB.copyTo(roiFace);
-
-    imshow("naive", muskWithNaiveReplace);
+static void GetCoordinates(Mat &sunglass_img)
+{
 }
 
 int main()
 {
-    // Load face image
-    string faceImagePath = "../musk.png";
-    Mat faceImage = imread(faceImagePath);
-
-    string sunglassImagePath = "../sunglass.png";
-    Mat sunglassImage = imread(sunglassImagePath, -1);
-
-    resize(sunglassImage, sunglassImage, Size(), 0.4, 0.4);
-
-    imshow("sunglass", sunglassImage);
-
-    cout << "Sunglass Dimensions" << sunglassImage.size() << endl;
-    cout << "Sunglass channels" << sunglassImage.channels();
-
-    // Separate the color and alpha channels
-    Mat glassRGBAChannels[4];
-    Mat glassRGBChannels[3];
-
-    split(sunglassImage, glassRGBAChannels);
-
-    for (int i = 0; i < 3; i++)
-    {
-        glassRGBChannels[i] = glassRGBAChannels[i];
-    }
-
-    Mat sunglassRGBImage;
-
-    merge(glassRGBChannels, 3, sunglassRGBImage);
-
-    // alpha mask is the fourth channel
-    Mat alphaMask = glassRGBAChannels[3];
-
-    naiveReplace(faceImage, sunglassRGBImage);
-
-    waitKey(0);
-    return 0;
+  // Load face image
+  std::string face_image_path = "../musk.png";
+  std::string sun_glass_path = "../sunglass.png";
+  SunglassFilter sunglass_filter{face_image_path, sun_glass_path};
 }
+
+} // namespace sunglassfilter
