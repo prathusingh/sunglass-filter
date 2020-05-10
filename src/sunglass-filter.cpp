@@ -4,6 +4,8 @@
 #include <opencv2/opencv.hpp>
 #include <utility>
 
+//#include "boost/filesystem.hpp"
+
 using namespace cv;
 
 namespace sunglassfilter {
@@ -41,10 +43,7 @@ void SunglassFilter::NaiveReplace() {
 int main() {
     std::string face_image_path = "../musk.png";
     std::string sun_glass_path = "../images/sunglass.png";
-    Mat temp = imread(face_image_path);
-    imshow("tempwi", temp);
-    waitKey(0);
-    // sunglassfilter::SunglassFilter sunglass_filter{face_image_path, sun_glass_path};
-    // sunglass_filter.NaiveReplace();
+    sunglassfilter::SunglassFilter sunglass_filter{face_image_path, sun_glass_path};
+    sunglass_filter.NaiveReplace();
     return 0;
 }
