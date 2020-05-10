@@ -26,7 +26,7 @@ class SunglassFilter {
 
     void NaiveReplace();
 
-    void UsingMask(Mat &face_img, Mat &sunglass_img, Mat &alpha_mask);
+    void UsingMask();
 };
 }  // namespace sunglassfilter
 

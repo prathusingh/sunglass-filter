@@ -4,8 +4,6 @@
 #include <opencv2/opencv.hpp>
 #include <utility>
 
-//#include "boost/filesystem.hpp"
-
 using namespace cv;
 
 namespace sunglassfilter {
@@ -52,7 +50,42 @@ void SunglassFilter::NaiveReplace() {
     Mat roi_face = musk_with_naive_replace(Range(row_bounds.first, row_bounds.second),
                                            Range(col_bounds.first, col_bounds.second));
     sunglass_RGB.copyTo(roi_face);
-    imshow("naive", musk_with_naive_replace);
+}
+
+void SunglassFilter::UsingMask() {
+    // Make the dimensions of the mask same as the input image.
+    // Since Face Image is a 3-channel image, we create a 3 channel image for the mask
+    Mat glass_mask;
+    Mat glass_mask_channels[] = {alpha_mask, alpha_mask, alpha_mask};
+    merge(glass_mask_channels, 3, glass_mask);
+
+    Mat face_with_glasses = face.clone();
+    auto coordinates_bounds = GetCoordinates();
+    auto row_bounds = coordinates_bounds.first;
+    auto col_bounds = coordinates_bounds.second;
+    Mat eye_roi = face_with_glasses(Range(row_bounds.first, row_bounds.second),
+                                    Range(col_bounds.first, col_bounds.second));
+
+    Mat eye_roi_channels[3];
+    split(eye_roi, eye_roi_channels);
+    Mat masked_eye_channels[3];
+    Mat masked_eye;
+
+    for (int i = 0; i < 3; i++) {
+        // Use the mask to create the masked eye region
+        multiply(eye_roi_channels[i], (1 - glass_mask_channels[i]), masked_eye_channels[i]);
+    }
+    merge(masked_eye_channels, 3, masked_eye);
+
+    Mat masked_glass;
+    // Use the mask to create the masked sunglass region
+    multiply(sunglass_RGB, glass_mask, masked_glass);
+
+    Mat eye_ROI_final;
+    // Combine the Sunglass in the Eye Region to get the augmented image
+    add(masked_eye, masked_glass, eye_ROI_final);
+
+    imshow("final", eye_ROI_final);
     waitKey(0);
 }
 
@@ -63,6 +96,7 @@ int main() {
     std::string sun_glass_path = "./src/images/sunglass.png";
     sunglassfilter::SunglassFilter sunglass_filter{face_image_path, sun_glass_path};
     sunglass_filter.SplitSunglassIntoChannels();
-    sunglass_filter.NaiveReplace();
+    // sunglass_filter.NaiveReplace();
+    sunglass_filter.UsingMask();
     return 0;
 }
