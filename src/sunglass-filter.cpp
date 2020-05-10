@@ -11,7 +11,8 @@ using namespace cv;
 namespace sunglassfilter {
 SunglassFilter::SunglassFilter(std::string face_path, std::string sunglass_path) {
     face = imread(face_path);
-    sunglass = imread(sunglass_path);
+    sunglass = imread(sunglass_path, -1);
+    resize(sunglass, sunglass, Size(), 0.4, 0.4);
 }
 
 std::pair<Bound, Bound> SunglassFilter::GetCoordinates(Mat &sunglass_img) {
@@ -34,15 +35,15 @@ void SunglassFilter::NaiveReplace() {
     auto col_bounds = coordinates_bounds.second;
     Mat roi_face = musk_with_naive_replace(Range(row_bounds.first, row_bounds.second),
                                            Range(col_bounds.first, col_bounds.second));
-    // sunglass.copyTo(roi_face);
-    imshow("naive", roi_face);
+    sunglass.copyTo(roi_face);
+    imshow("naive", musk_with_naive_replace);
     waitKey(0);
 }
 }  // namespace sunglassfilter
 
 int main() {
-    std::string face_image_path = "../musk.png";
-    std::string sun_glass_path = "../images/sunglass.png";
+    std::string face_image_path = "./src/images/musk.png";
+    std::string sun_glass_path = "./src/images/sunglass.png";
     sunglassfilter::SunglassFilter sunglass_filter{face_image_path, sun_glass_path};
     sunglass_filter.NaiveReplace();
     return 0;
