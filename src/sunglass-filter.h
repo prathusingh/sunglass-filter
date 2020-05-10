@@ -27,6 +27,8 @@ class SunglassFilter {
     void NaiveReplace();
 
     void UsingMask();
+
+    void UsingBitwise();
 };
 }  // namespace sunglassfilter
 

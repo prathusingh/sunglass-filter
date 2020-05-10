@@ -84,8 +84,35 @@ void SunglassFilter::UsingMask() {
     Mat eye_ROI_final;
     // Combine the Sunglass in the Eye Region to get the augmented image
     add(masked_eye, masked_glass, eye_ROI_final);
+}
 
-    imshow("final", eye_ROI_final);
+void SunglassFilter::UsingBitwise() {
+    Mat glass_mask_not;
+    bitwise_not(alpha_mask, glass_mask_not);
+    Mat glass_mask_not_channels[] = {glass_mask_not, glass_mask_not, glass_mask_not};
+    Mat glass_mask_not_merged;
+    merge(glass_mask_not_channels, 3, glass_mask_not_merged);
+
+    Mat face_with_glasses = face.clone();
+    auto coordinates_bounds = GetCoordinates();
+    auto row_bounds = coordinates_bounds.first;
+    auto col_bounds = coordinates_bounds.second;
+    Mat eye_roi = face_with_glasses(Range(row_bounds.first, row_bounds.second),
+                                    Range(col_bounds.first, col_bounds.second));
+
+    Mat eye;
+    bitwise_and(eye_roi, glass_mask_not_merged, eye);
+
+    Mat glass_mask;
+    Mat glass_mask_channels[] = {alpha_mask, alpha_mask, alpha_mask};
+    merge(glass_mask_channels, 3, glass_mask);
+
+    // Use the mask to create the masked sunglass region
+    Mat masked_glass;
+    multiply(sunglass_RGB, glass_mask, masked_glass);
+
+    
+    imshow("result", masked_glass);
     waitKey(0);
 }
 
@@ -97,6 +124,7 @@ int main() {
     sunglassfilter::SunglassFilter sunglass_filter{face_image_path, sun_glass_path};
     sunglass_filter.SplitSunglassIntoChannels();
     // sunglass_filter.NaiveReplace();
-    sunglass_filter.UsingMask();
+    // sunglass_filter.UsingMask();
+    sunglass_filter.UsingBitwise();
     return 0;
 }
