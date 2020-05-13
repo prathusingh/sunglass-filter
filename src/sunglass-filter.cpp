@@ -111,9 +111,8 @@ void SunglassFilter::UsingBitwise() {
     Mat masked_glass;
     multiply(sunglass_RGB, glass_mask, masked_glass);
 
-    
-    imshow("result", masked_glass);
-    waitKey(0);
+    Mat eye_ROI_final;
+    add(eye, masked_glass, eye_ROI_final);
 }
 
 }  // namespace sunglassfilter
@@ -124,7 +123,7 @@ int main() {
     sunglassfilter::SunglassFilter sunglass_filter{face_image_path, sun_glass_path};
     sunglass_filter.SplitSunglassIntoChannels();
     // sunglass_filter.NaiveReplace();
-    // sunglass_filter.UsingMask();
-    sunglass_filter.UsingBitwise();
+    sunglass_filter.UsingMask();
+    // sunglass_filter.UsingBitwise();
     return 0;
 }
